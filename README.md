@@ -15,9 +15,10 @@ Simulates a growing e-commerce company that needs to:
 - Support business intelligence and decision-making
 
 ## Architecture
-
+```
 Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → dbt Transformation → Analytics
 (Python)         (Storage)    (PySpark)         (Scheduling)        (Snowflake)      (BI Ready)
+```
 
 ## Pipeline Stages
 
@@ -127,7 +128,7 @@ ecommerce-data-pipeline/
 ├── requirements.txt               # Python dependencies
 └── README.md                      # This file
 
-
+```
 ### How to Run (Data Generation)
 
 1. **Clone the repository**
