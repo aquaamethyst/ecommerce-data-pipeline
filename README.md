@@ -157,6 +157,7 @@ ecommerce-data-pipeline/
 ```
 
 ### Sample Output
+```
 ==================================================
 E-Commerce Data Generation Script
 Generating 1000 customers...
@@ -178,7 +179,7 @@ completed    8,500
 pending        800
 cancelled      500
 refunded       200
-
+```
 ## Data Schema
 
 ### Customers
