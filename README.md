@@ -102,6 +102,7 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
 - **Metabase** - Data visualization
 
 ## Project Structure
+```
 ecommerce-data-pipeline/
 ├── data_generation/
 │   └── generate_data.py           # Data generation script
