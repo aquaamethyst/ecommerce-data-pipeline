@@ -38,9 +38,9 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
 - **Technology**: AWS S3
 - **Goal**: Upload generated data to cloud data lake
 - **Structure**:
-  s3://bucket/raw/customers/
-  s3://bucket/raw/products/
-  s3://bucket/raw/transactions/
+  -s3://bucket/raw/customers/
+  -s3://bucket/raw/products/
+  -s3://bucket/raw/transactions/
   
 ### Stage 3: Data Processing 
 - **Technology**: Apache Spark (PySpark)
