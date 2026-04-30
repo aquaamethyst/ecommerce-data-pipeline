@@ -7,6 +7,8 @@ import pandas as pd
 import random
 from datetime import datetime, timedelta
 import os
+import boto3
+from botocore.exceptions import NoCredentialsError
 
 
 # initialize faker
@@ -149,7 +151,25 @@ def generate_transactions(n, customers_df,products_df):
         transactions.append(transaction)
 
     return pd.DataFrame(transactions)
+
+
+def upload_to_s3(local_file, bucket_name, s3_path):
+    """Upload a file to S3"""
+    s3_client = boto3.client('s3')
     
+    try:
+        s3_client.upload_file(local_file, bucket_name, s3_path)
+        print(f"✓ Uploaded to S3: s3://{bucket_name}/{s3_path}")
+        return True
+    except FileNotFoundError:
+        print(f"✗ File not found: {local_file}")
+        return False
+    except NoCredentialsError:
+        print("✗ AWS credentials not found. Run 'aws configure'")
+        return False
+
+
+
 def main():
     """Main execution function"""
     print("=" * 50)
@@ -180,6 +200,16 @@ def main():
     print(f"✓ Customers: {customers_file}")
     print(f"✓ Products: {products_file}")
     print(f"✓ Transactions: {transactions_file}")
+
+    print()
+    print("Uploading to S3...")
+    
+    BUCKET_NAME = 'ecommerce-data-pipeline-kausalya'  # Change to your bucket!
+    
+    upload_to_s3(customers_file, BUCKET_NAME, 'raw/customers/customers.csv')
+    upload_to_s3(products_file, BUCKET_NAME, 'raw/products/products.csv')
+    upload_to_s3(transactions_file, BUCKET_NAME, 'raw/transactions/transactions.csv')
+
     
     # Print summary statistics
     print()
