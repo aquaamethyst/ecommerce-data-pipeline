@@ -36,12 +36,26 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
   - Realistic product pricing and margins
 
 ### Stage 2: Cloud Storage 
-- **Technology**: AWS S3
-- **Goal**: Upload generated data to cloud data lake
-- **Structure**:
-  `s3://bucket/raw/customers/`
-  `s3://bucket/raw/products/`
-  `s3://bucket/raw/transactions/`
+- **Technology**: AWS S3, boto3
+- **Achievement**: Data uploaded to cloud data lake
+- **Bucket Structure**: 
+```
+  s3://ecommerce-data-pipeline-kausalya/
+  ├── raw/
+  │   ├── customers/
+  │   │   └── customers.csv
+  │   ├── products/
+  │   │   └── products.csv
+  │   └── transactions/
+  │       └── transactions.csv
+  ├── processed/
+  └── staging/
+```
+- **Features**:
+  - Automated upload with boto3 Python SDK
+  - AWS CLI configured for command-line access
+  - Proper IAM credentials and security
+  - Data encrypted at rest (SSE-S3)
   
 ### Stage 3: Data Processing 
 - **Technology**: Apache Spark (PySpark)
@@ -94,8 +108,10 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
 - **Python 3.8+** - Data generation and scripting
 - **Pandas** - Data manipulation
 - **Faker** - Realistic fake data generation
-- **Git/GitHub** - Version control
+- **boto3** - AWS SDK for Python
 - **AWS S3** - Cloud data lake storage
+- **AWS CLI** - Command-line S3 management
+- **Git/GitHub** - Version control
 - **Apache Spark** - Distributed data processing
 - **Apache Airflow** - Workflow orchestration
 - **Snowflake** - Cloud data warehouse
@@ -180,6 +196,79 @@ pending        800
 cancelled      500
 refunded       200
 ```
+
+## AWS S3 Setup
+
+### Prerequisites
+- AWS account (free tier)
+- AWS CLI installed
+- AWS credentials configured
+
+### Setup Instructions
+
+1. **Install AWS CLI**
+```bash
+   # Mac
+   brew install awscli
+   
+   # Windows
+   # Download from https://aws.amazon.com/cli/
+   
+   # Linux
+   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+   unzip awscliv2.zip
+   sudo ./aws/install
+```
+
+2. **Configure AWS credentials**
+```bash
+   aws configure
+```
+   
+   Enter:
+   - AWS Access Key ID
+   - AWS Secret Access Key
+   - Default region (e.g., `us-east-1`)
+   - Default output format: `json`
+
+3. **Install boto3**
+```bash
+   pip install boto3
+   pip freeze > requirements.txt
+```
+
+4. **Update bucket name in script**
+   
+   Edit `data_generation/generate_data.py`:
+```python
+   BUCKET_NAME = 'your-bucket-name-here'
+```
+
+5. **Run script (generates data AND uploads to S3)**
+```bash
+   cd data_generation
+   python generate_data.py
+```
+
+### Manual Upload (Optional)
+
+Upload files manually using AWS CLI:
+```bash
+# Upload individual file
+aws s3 cp data/raw/customers.csv s3://your-bucket/raw/customers/
+
+# Sync entire directory
+aws s3 sync data/raw/ s3://your-bucket/raw/
+```
+
+### Verify Upload
+
+Check files in S3:
+```bash
+aws s3 ls s3://your-bucket/raw/ --recursive
+```
+
+Or visit AWS Console: https://s3.console.aws.amazon.com/
 ## Data Schema
 
 ### Customers
