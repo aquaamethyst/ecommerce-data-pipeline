@@ -122,7 +122,7 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
 ```
 ecommerce-data-pipeline/
 ├── data_generation/
-│   └── generate_data.py           # Data generation script
+│   └── generate_data.py           # Generates data + uploads to S3
 ├── spark_jobs/
 │   ├── clean_transactions.py      # Data cleaning
 │   ├── enrich_data.py             # Data enrichment
