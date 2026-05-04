@@ -56,6 +56,8 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
   - AWS CLI configured for command-line access
   - Proper IAM credentials and security
   - Data encrypted at rest (SSE-S3)
+ 
+- **Code**: See `generate_data.py` - `upload_to_s3()` function
   
 ### Stage 3: Data Processing 
 - **Technology**: Apache Spark (PySpark)
