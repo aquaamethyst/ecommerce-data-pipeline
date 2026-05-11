@@ -107,14 +107,14 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
 ## Tech Stack
 
 ### Current
-- **Python 3.8+** - Data generation and scripting
+- **Python 3.10** - Data generation and scripting
 - **Pandas** - Data manipulation
 - **Faker** - Realistic fake data generation
 - **boto3** - AWS SDK for Python
 - **AWS S3** - Cloud data lake storage
 - **AWS CLI** - Command-line S3 management
 - **Git/GitHub** - Version control
-- **Apache Spark** - Distributed data processing
+- **PySpark 3.3.3** - Distributed data processing
 - **Apache Airflow** - Workflow orchestration
 - **Snowflake** - Cloud data warehouse
 - **dbt (Data Build Tool)** - Analytics engineering
