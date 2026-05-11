@@ -307,6 +307,14 @@ Or visit AWS Console: https://s3.console.aws.amazon.com/
 - Cloud data warehousing (Snowflake)
 - Data visualization and BI tools
 
+## Practical Lessons Learned While Building This Project:
+
+### PySpark Version Compatibility
+- **Challenge**: Encountered `NumberFormatException: "60s"` with PySpark 3.5 + Hadoop-AWS 3.3.x
+- **Root Cause**: Timeout configuration format incompatibility between library versions
+- **Solution**: Downgraded to PySpark 3.3.3 (production-stable) + Hadoop-AWS 3.3.1
+- **Takeaway**: Version compatibility is critical in distributed systems; sometimes newer isn't better
+
 ## Why This Project?
 
 After taking a career break for family, I'm transitioning into data engineering. This project demonstrates:
