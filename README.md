@@ -297,7 +297,7 @@ refunded       200
    
    Edit `data_generation/generate_data.py`:
 ```python
-   BUCKET_NAME = 'your-bucket-name-here'
+   BUCKET_NAME = 'ecommerce-data-pipeline-kausalya'
 ```
 
 5. **Run script (generates data AND uploads to S3)**
@@ -311,17 +311,17 @@ refunded       200
 Upload files manually using AWS CLI:
 ```bash
 # Upload individual file
-aws s3 cp data/raw/customers.csv s3://your-bucket/raw/customers/
+aws s3 cp data/raw/customers.csv s3://ecommerce-data-pipeline-kausalya/raw/customers/
 
 # Sync entire directory
-aws s3 sync data/raw/ s3://your-bucket/raw/
+aws s3 sync data/raw/ s3://ecommerce-data-pipeline-kausalya/raw/
 ```
 
 ### Verify Upload
 
 Check files in S3:
 ```bash
-aws s3 ls s3://your-bucket/raw/ --recursive
+aws s3 ls s3://ecommerce-data-pipeline-kausalya/raw/ --recursive
 ```
 
 Or visit AWS Console: https://s3.console.aws.amazon.com/
