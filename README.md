@@ -388,6 +388,44 @@ spark-submit \
 - **Local**: Check terminal output for job progress
 - **EMR**: View Spark UI at `http://master-node:8088`
 - **S3**: Verify output with `aws s3 ls s3://bucket/processed/`
+
+## Sample Output
+
+### Data Quality Summary
+```
+============================================================
+CLEANING SUMMARY
+Initial records:     10,000
+Duplicates removed:  0
+Nulls removed:       0
+Invalid removed:     0
+Final records:       10,000
+Data quality:        100.0% retained
+```
+### Enriched Data Sample
+```
++---------------+------------+---------+------------+--------+-------+
+|transaction_id |customer_id |category |total_amount|profit  |margin%|
++---------------+------------+---------+------------+--------+-------+
+|TXN0000001     |CUST00042   |Electronics|245.67    |73.70   |30.0   |
+|TXN0000002     |CUST00123   |Clothing   |89.99     |35.99   |40.0   |
++---------------+------------+---------+------------+--------+-------+
+```
+### Aggregated Metrics
+**Daily Sales Overview:**
+- Total Revenue: $2,456,789.50
+- Average Order Value: $245.68
+- Total Transactions: 10,000
+- Unique Customers: 1,000
+
+**Top Product Categories:**
+1. Electronics: $1,045,230 (42.5%)
+2. Clothing: $516,345 (21.0%)
+3. Sports: $442,890 (18.0%)
+4. Books: $368,670 (15.0%)
+5. Home & Garden: $83,654 (3.5%)
+
+   
 ## Data Schema
 
 ### Customers
