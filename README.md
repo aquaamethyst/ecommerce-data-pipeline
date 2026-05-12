@@ -60,13 +60,66 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
 - **Code**: See `generate_data.py` - `upload_to_s3()` function
   
 ### Stage 3: Data Processing 
-- **Technology**: Apache Spark (PySpark)
+- **Technology**: Apache Spark (PySpark 3.3), Python
 - **Processing Jobs**:
   - Data quality checks and validation
   - Deduplication and cleaning
   - Data enrichment (joining customers, products, transactions)
   - Aggregations (daily sales, customer lifetime value, product performance)
 - **Output**: Processed data in S3 staging area
+
+  #### Spark Jobs
+
+**1. Clean Transactions (`clean_transactions.py`)**
+- Removes duplicate records based on transaction_id
+- Validates critical fields (transaction_id, customer_id, product_id)
+- Filters invalid data (negative prices, zero quantities)
+- Standardizes status values (uppercase, trimmed)
+- Adds data quality flags
+- Output: `s3://bucket/processed/transactions/`
+
+**2. Enrich Data (`enrich_data.py`)**
+- Joins transactions with customer and product data
+- Calculates derived metrics:
+  - Customer lifetime (days since signup)
+  - Profit per transaction
+  - Profit margin percentage
+  - Premium customer flags
+  - High-value transaction indicators
+- Output: `s3://bucket/processed/enriched/`
+
+**3. Aggregate Metrics (`aggregate_metrics.py`)**
+- Creates analytics-ready summary tables:
+  - **Daily Sales**: Revenue, profit, transaction count, average order value
+  - **Category Performance**: Sales and profitability by product category
+  - **Customer Lifetime Value**: Purchase behavior and lifetime metrics
+  - **Product Performance**: Best-selling products and revenue contribution
+- Output: `s3://bucket/processed/aggregates/`
+
+#### Technical Features
+- ✅ Distributed S3 read/write with parallel processing
+- ✅ Environment-based configuration (local/EMR/Databricks/standalone)
+- ✅ Comprehensive data quality checks and validation
+- ✅ Error handling and logging
+- ✅ Production-ready code structure
+- ✅ Scalable to large datasets
+
+#### Data Pipeline Output Structure
+```
+s3://ecommerce-data-pipeline/
+├── raw/
+│   ├── customers/
+│   ├── products/
+│   └── transactions/
+└── processed/
+    ├── transactions/           # Cleaned data
+    ├── enriched/               # Joined with metrics
+    └── aggregates/             # Summary tables
+        ├── daily_sales/
+        ├── category_perf/
+        ├── customer_ltv/
+        └── product_perf/
+```
 
 ### Stage 4: Orchestration
 - **Technology**: Apache Airflow
@@ -115,6 +168,7 @@ Data Generation → AWS S3 → Spark Processing → Airflow Orchestration → db
 - **AWS CLI** - Command-line S3 management
 - **Git/GitHub** - Version control
 - **PySpark 3.3.3** - Distributed data processing
+- **Hadoop AWS 3.3.1** - S3 connector for Spark
 - **Apache Airflow** - Workflow orchestration
 - **Snowflake** - Cloud data warehouse
 - **dbt (Data Build Tool)** - Analytics engineering
@@ -271,6 +325,69 @@ aws s3 ls s3://your-bucket/raw/ --recursive
 ```
 
 Or visit AWS Console: https://s3.console.aws.amazon.com/
+
+## Running the Spark Jobs
+
+The project includes three Spark jobs for data processing. Jobs use environment-based configuration for seamless deployment.
+
+### Prerequisites
+- Python 3.10+
+- PySpark 3.3.3 installed
+- AWS credentials configured
+- Java 17 (for Spark)
+
+### Local Development
+
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Run jobs sequentially
+cd spark_jobs
+
+# 1. Clean transactions
+python clean_transactions.py
+
+# 2. Enrich data
+python enrich_data.py
+
+# 3. Generate aggregates
+python aggregate_metrics.py
+```
+
+### Configuration
+
+Set environment variables to control execution:
+
+```bash
+# Local mode (default)
+SPARK_ENV=local python clean_transactions.py
+
+# AWS EMR
+SPARK_ENV=emr spark-submit clean_transactions.py
+
+# Custom bucket
+S3_BUCKET=my-custom-bucket python clean_transactions.py
+```
+
+### Production Deployment
+
+```bash
+# Deploy to AWS EMR
+spark-submit \
+    --master yarn \
+    --deploy-mode cluster \
+    --num-executors 10 \
+    --executor-memory 8G \
+    --executor-cores 4 \
+    s3://my-bucket/scripts/clean_transactions.py
+```
+
+### Monitoring
+
+- **Local**: Check terminal output for job progress
+- **EMR**: View Spark UI at `http://master-node:8088`
+- **S3**: Verify output with `aws s3 ls s3://bucket/processed/`
 ## Data Schema
 
 ### Customers
